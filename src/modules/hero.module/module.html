@@ -1,0 +1,60 @@
+{{ require_css(get_asset_url("../../css/components/buttons.css")) }}
+
+{% require_css %}
+  <style>
+    {% scope_css %}
+      .hero {
+        {% if module.background_image.src %}
+          background-image: url('{{ module.background_image.src|escape_url }}');
+        {% endif %}
+      }
+    {% end_scope_css %}
+  </style>
+{% end_require_css %}
+
+{% set primary_href = module.primary_cta.link.url.href %}
+{% if module.primary_cta.link.url.type == "EMAIL_ADDRESS" %}
+  {% set primary_href = "mailto:" + primary_href %}
+{% endif %}
+
+{% set secondary_href = module.secondary_cta.link.url.href %}
+{% if module.secondary_cta.link.url.type == "EMAIL_ADDRESS" %}
+  {% set secondary_href = "mailto:" + secondary_href %}
+{% endif %}
+
+<section class="hero hero--{{ module.layout|escape_attr }}">
+
+  <div class="hero__overlay"></div>
+
+  <div class="hero__inner">
+    <div class="hero__content">
+      {% if module.content.headline %}
+        <h1 class="hero__headline">{{ module.content.headline|escape_html }}</h1>
+      {% endif %}
+
+      {% if module.content.text %}
+        <div class="hero__text">
+          {{ module.content.text }}
+        </div>
+      {% endif %}
+
+      {% if (module.primary_cta.text and primary_href) or (module.secondary_cta.text and secondary_href) %}
+        <div class="hero__actions">
+            {% if module.primary_cta.text and primary_href %}
+            <a class="hero__button btn btn--primary"
+                href="{{ primary_href|escape_url }}">
+                {{ module.primary_cta.text|escape_html }}
+            </a>
+            {% endif %}
+
+            {% if module.secondary_cta.text and secondary_href %}
+            <a class="hero__button btn btn--secondary"
+                href="{{ secondary_href|escape_url }}">
+                {{ module.secondary_cta.text|escape_html }}
+            </a>
+            {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>

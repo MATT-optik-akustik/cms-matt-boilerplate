@@ -1,0 +1,81 @@
+[
+  {
+    "label": "Content",
+    "name": "content",
+    "type": "group",
+    "children": [
+      {
+        "label": "Headline",
+        "name": "headline",
+        "type": "text",
+        "required": true,
+        "default": "Hero headline"
+      },
+      {
+        "label": "Text",
+        "name": "text",
+        "type": "richtext",
+        "required": false,
+        "default": "<p>Beschreibender Text für das Hero-Modul.</p>"
+      }
+    ]
+  },
+  {
+    "label": "Primary CTA",
+    "name": "primary_cta",
+    "type": "group",
+    "children": [
+      {
+        "label": "Button text",
+        "name": "text",
+        "type": "text",
+        "required": false,
+        "default": "Mehr erfahren"
+      },
+      {
+        "label": "Link",
+        "name": "link",
+        "type": "link",
+        "required": false
+      }
+    ]
+  },
+  {
+    "label": "Secondary CTA",
+    "name": "secondary_cta",
+    "type": "group",
+    "children": [
+      {
+        "label": "Button text",
+        "name": "text",
+        "type": "text",
+        "required": false
+      },
+      {
+        "label": "Link",
+        "name": "link",
+        "type": "link",
+        "required": false
+      }
+    ]
+  },
+  {
+    "label": "Background image",
+    "name": "background_image",
+    "type": "image",
+    "required": false,
+    "responsive": true,
+    "resizable": true
+  },
+  {
+    "label": "Layout",
+    "name": "layout",
+    "type": "choice",
+    "display": "select",
+    "choices": [
+      ["left", "Left aligned"],
+      ["center", "Centered"]
+    ],
+    "default": "left"
+  }
+]

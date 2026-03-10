@@ -2,22 +2,3 @@
   text-align: left;
 }
 
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  white-space: nowrap;
-
-  padding: 0.75rem 2rem;   /* py-3 px-8 */
-  border-radius: 1.25rem;  /* rounded-xl */
-
-  font-size: 0.875rem;     /* text-sm */
-  font-weight: 500;        /* font-medium */
-  line-height: 1;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-
-  transition: all 0.2s ease;
-}

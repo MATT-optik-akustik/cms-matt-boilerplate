@@ -57,18 +57,14 @@
         ]
       },
       {
-        "label": "Corner",
-        "name": "corner",
+        "label": "Border",
+        "name": "border",
         "type": "group",
         "children": [
           {
-            "label": "Radius",
-            "name": "radius",
-            "type": "number",
-            "display": "text",
-            "max": 100,
-            "step": 1,
-            "suffix": "px"
+            "label": "Border",
+            "name": "border",
+            "type": "border"
           }
         ]
       },

@@ -32,6 +32,7 @@ Base HTML elements are styled in this section (<body>, <h1>, <a>, <p>, <button> 
 Specific pieces of UI that are stylized. Typically used for global partial styling
 */
 
+{% include './components/buttons.css' %}
 {% include './components/_header.css' %}
 {% include './components/_default-modules.css' %}
 
