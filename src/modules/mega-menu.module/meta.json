@@ -1,0 +1,16 @@
+{
+	"label": "Mega Menu",
+	"global": false,
+	"host_template_types": ["PAGE", "BLOG_POST", "BLOG_LISTING"],
+	"icon": "../../images/module-icons/menu.svg",
+	"css_assets": [],
+	"external_js": [],
+	"js_assets": [],
+	"other_assets": [],
+	"smart_type": "NOT_SMART",
+	"is_available_for_new_content": true,
+	"categories": [
+		"functionality"
+	],
+	"inline_help_text": "Use this module for desktop mega navigation. Menu items, columns, and promo cards are managed inside the module fields."
+}
