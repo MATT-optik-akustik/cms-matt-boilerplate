@@ -57,18 +57,6 @@
         ]
       },
       {
-        "label": "Border",
-        "name": "border",
-        "type": "group",
-        "children": [
-          {
-            "label": "Border",
-            "name": "border",
-            "type": "border"
-          }
-        ]
-      },
-      {
         "label": "Corner",
         "name": "corner",
         "type": "group",
