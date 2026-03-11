@@ -25,6 +25,8 @@
 
 {% if module.items and module.items|length %}
 	<nav class="mega-menu" aria-label="Primary navigation" data-mega-menu>
+	<div class="mega-menu-1">	
+		<p>MATT</p>
 		<ul class="mega-menu__list no-list">
 			{% for item in module.items %}
 			{% set has_panel = item.show_panel and (item.columns|length or item.cards|length) %}
@@ -123,6 +125,14 @@
 			</li>
 			{% endfor %}
 		</ul>
+	</div>
+		<div class="mega-menu-2">
+		<p>icon 1</p>
+		<p>icon 2</p>
+		<p>icon 1</p>
+		<p>icon 2</p>
+		<p>CALL TO ACTION</p>
+		</div>
 	</nav>
 {% else %}
 	<div class="mega-menu mega-menu--empty">
