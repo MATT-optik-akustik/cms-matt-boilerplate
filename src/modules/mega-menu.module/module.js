@@ -1,6 +1,18 @@
 document.querySelectorAll("[data-mega-menu]").forEach((menu) => {
 	const items = Array.from(menu.querySelectorAll("[data-mega-menu-item]"));
 	const mobileBreakpoint = window.matchMedia("(max-width: 991px)");
+	const closeDelay = 300;
+
+	const closeTimers = new WeakMap();
+
+	const clearCloseTimer = (item) => {
+		const timer = closeTimers.get(item);
+
+		if (timer) {
+			window.clearTimeout(timer);
+			closeTimers.delete(item);
+		}
+	};
 
 	const closeItem = (item) => {
 		const trigger = item.querySelector("[data-mega-menu-trigger]");
@@ -10,6 +22,7 @@ document.querySelectorAll("[data-mega-menu]").forEach((menu) => {
 			return;
 		}
 
+		clearCloseTimer(item);
 		item.classList.remove("is-open");
 		trigger.setAttribute("aria-expanded", "false");
 		panel.hidden = true;
@@ -23,10 +36,22 @@ document.querySelectorAll("[data-mega-menu]").forEach((menu) => {
 			return;
 		}
 
+		clearCloseTimer(item);
 		item.classList.add("is-open");
 		trigger.setAttribute("aria-expanded", "true");
 		panel.hidden = false;
 	};
+
+	const scheduleCloseItem = (item) => {
+		clearCloseTimer(item);
+
+		const timer = window.setTimeout(() => {
+			closeItem(item);
+		}, closeDelay);
+
+		closeTimers.set(item, timer);
+	};
+
 
 	const closeAll = (exceptItem) => {
 		items.forEach((item) => {
@@ -49,6 +74,7 @@ document.querySelectorAll("[data-mega-menu]").forEach((menu) => {
 				return;
 			}
 
+			clearCloseTimer(item);
 			closeAll(item);
 			openItem(item);
 		});
@@ -58,7 +84,7 @@ document.querySelectorAll("[data-mega-menu]").forEach((menu) => {
 				return;
 			}
 
-			closeItem(item);
+			scheduleCloseItem(item);
 		});
 
 		trigger.addEventListener("focus", () => {
@@ -66,6 +92,7 @@ document.querySelectorAll("[data-mega-menu]").forEach((menu) => {
 				return;
 			}
 
+		clearCloseTimer(item);
 			closeAll(item);
 			openItem(item);
 		});

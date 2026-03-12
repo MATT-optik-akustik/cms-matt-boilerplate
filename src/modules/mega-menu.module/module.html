@@ -23,7 +23,106 @@
 	{% endif %}
 {% endmacro %}
 
-{% if module.items and module.items|length %}
+{% macro render_menu_link(item, class_name) %}
+	{% if item.url %}
+		<a class="{{ class_name|escape_attr }}"
+			 href="{{ item.url|escape_url }}"
+			 {% if item.activeNode %}aria-current="page"{% endif %}
+			 {% if item.linkTarget %}target="_blank" rel="noopener"{% endif %}>
+			{{ item.label|escape_html }}
+		</a>
+	{% else %}
+		<span class="{{ class_name|escape_attr }}">{{ item.label|escape_html }}</span>
+	{% endif %}
+{% endmacro %}
+
+{% set navigation_items = menu(module.menu, "site_root").children if module.menu else [] %}
+
+{% if navigation_items|length %}
+	<nav class="mega-menu" aria-label="Primary navigation" data-mega-menu>
+	<div class="mega-menu-1">
+		<p>MATT</p>
+		<ul class="mega-menu__list no-list">
+			{% for item in navigation_items %}
+			{% set has_panel = item.children|length %}
+			<li class="mega-menu__item{{ ' mega-menu__item--has-panel' if has_panel }}" data-mega-menu-item>
+				{% if has_panel %}
+					<button class="mega-menu__trigger"
+								type="button"
+								aria-expanded="false"
+								data-mega-menu-trigger>
+						{{ item.label|escape_html }}
+					</button>
+					<div class="mega-menu__panel" hidden data-mega-menu-panel>
+						<div class="mega-menu__panel-inner">
+							<div class="mega-menu__grid">
+								<div class="mega-menu__columns">
+									{% set ns = namespace(has_nested_children=false) %}
+									{% for child in item.children %}
+										{% if child.children|length %}
+											{% set ns.has_nested_children = true %}
+										{% endif %}
+									{% endfor %}
+
+									{% if ns.has_nested_children %}
+										{% for child in item.children %}
+											<section class="mega-menu__column">
+												<h3 class="mega-menu__column-heading">{{ child.label|escape_html }}</h3>
+												<ul class="mega-menu__links no-list">
+													{% if child.url %}
+														<li class="mega-menu__links-item">
+															{{ render_menu_link(child, 'mega-menu__link') }}
+														</li>
+													{% endif %}
+													{% for sublink in child.children %}
+														<li class="mega-menu__links-item">
+															{{ render_menu_link(sublink, 'mega-menu__link') }}
+														</li>
+													{% endfor %}
+												</ul>
+											</section>
+										{% endfor %}
+									{% else %}
+										<section class="mega-menu__column">
+											<ul class="mega-menu__links no-list">
+												{% for child in item.children %}
+													<li class="mega-menu__links-item">
+														{{ render_menu_link(child, 'mega-menu__link') }}
+													</li>
+												{% endfor %}
+											</ul>
+										</section>
+									{% endif %}
+								</div>
+							</div>
+
+							{% if item.url %}
+								<div class="mega-menu__footer">
+									{{ render_menu_link(item, 'mega-menu__overview-link') }}
+								</div>
+							{% endif %}
+						</div>
+					</div>
+				{% else %}
+					{{ render_menu_link(item, 'mega-menu__top-link') }}
+				{% endif %}
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+		<div class="mega-menu-2">
+		<p>icon 1</p>
+		<p>icon 2</p>
+		<p>icon 1</p>
+		<p>icon 2</p>
+		<p>CALL TO ACTION</p>
+		</div>
+	</nav>
+
+
+{# Fallback with module items #}
+
+{% elif module.items and module.items|length %}
 	<nav class="mega-menu" aria-label="Primary navigation" data-mega-menu>
 	<div class="mega-menu-1">	
 		<p>MATT</p>
@@ -137,8 +236,8 @@
 {% else %}
 	<div class="mega-menu mega-menu--empty">
 		<div class="mega-menu__empty-state">
-			<p class="mega-menu__empty-title">Mega Menu preview has no items yet.</p>
-			<p class="mega-menu__empty-text">If the module editor also shows "This module has no fields", the portal version of fields.json has not been synced or published yet.</p>
+			<p class="mega-menu__empty-title">Mega Menu preview has no navigation yet.</p>
+			<p class="mega-menu__empty-text">Select a reusable HubSpot menu in the module editor or keep using the fallback item structure until the portal fields are synced.</p>
 		</div>
 	</div>
 {% endif %}

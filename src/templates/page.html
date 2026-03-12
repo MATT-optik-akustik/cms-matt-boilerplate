@@ -1,0 +1,17 @@
+<!--
+templateType: page
+isAvailableForNewContent: true
+label: Test Page
+-->
+
+{% extends "./layouts/base.html" %}
+
+{% block body %}
+
+<h1>Theme Test</h1>
+
+{% module "mega_menu"
+   path="../modules/mega-menu"
+%}
+
+{% endblock body %}

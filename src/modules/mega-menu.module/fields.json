@@ -1,4 +1,12 @@
-[
+	[
+	{
+		"label": "Navigation menu",
+		"name": "menu",
+		"type": "menu",
+		"required": false,
+		"default": null,
+		"help_text": "Select the reusable HubSpot navigation menu that should power this mega menu."
+	},
 	{
 		"label": "Items",
 		"name": "items",

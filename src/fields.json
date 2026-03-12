@@ -115,7 +115,7 @@
         "name": "maximum_content_width",
         "type": "number",
         "display": "slider",
-        "max": 2500,
+        "max": 1640,
         "min": 900,
         "suffix": "px",
         "default": 1240
