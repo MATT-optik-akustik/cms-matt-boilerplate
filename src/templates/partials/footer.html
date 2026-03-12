@@ -2,42 +2,184 @@
   templateType: global_partial
   label: Footer
 -->
-<footer class="footer">
-  {% dnd_area "footer"
-    label="Footer",
-    class="footer__container content-wrapper"
-  %}
+{% set footer_service_links = [
+  { "label": "MATT Lens", "href": "#" },
+  { "label": "Brillenfinanzierung", "href": "#" },
+  { "label": "Sorglospaket +", "href": "#" },
+  { "label": "Sorglospaket Kids", "href": "#" },
+  { "label": "Sorglospaket Akustik", "href": "#" },
+  { "label": "Kundenportal myMATT", "href": "#" },
+  { "label": "Augen-Check-Up bei MATT", "href": "#" }
+] %}
+{% set footer_about_links = [
+  { "label": "Philosophie", "href": "#" },
+  { "label": "Historie", "href": "#" },
+  { "label": "Kontakt", "href": "#" },
+  { "label": "70 Jahre MATT", "href": "#" },
+  { "label": "Partnerschaft bei MATT", "href": "#" }
+] %}
+{% set footer_career_links = [
+  { "label": "Direkteinstieg", "href": "#" },
+  { "label": "Offene Stellen", "href": "#" },
+  { "label": "Mitarbeitermeinungen", "href": "#" },
+  { "label": "Ausbildung Ubersicht", "href": "#" },
+  { "label": "Ausbildung Augenoptik", "href": "#" },
+  { "label": "Ausbildung Horakustik", "href": "#" }
+] %}
+{% set footer_location_links = [
+  { "label": "Munchen", "href": "#" },
+  { "label": "Mannheim", "href": "#" },
+  { "label": "Bonn", "href": "#" },
+  { "label": "Wiesbaden", "href": "#" },
+  { "label": "Regensburg", "href": "#" },
+  { "label": "Heidelberg", "href": "#" },
+  { "label": "Amberg", "href": "#" },
+  { "label": "Rosenheim", "href": "#" },
+  { "label": "Landshut", "href": "#" },
+  { "label": "Erfurt", "href": "#" },
+  { "label": "Weitere Standorte", "href": "#" }
+] %}
+{% set footer_legal_links = [
+  { "label": "Datenschutz", "href": "#" },
+  { "label": "Impressum", "href": "#" }
+] %}
+{% set footer_social_links = [
+  { "label": "Instagram", "href": "#", "icon": "instagram" },
+  { "label": "YouTube", "href": "#", "icon": "youtube" },
+  { "label": "Facebook", "href": "#", "icon": "facebook-f" }
+] %}
 
-    {# Social follow and copyright #}
+<footer class="footer footer--matt">
+  <div class="content-wrapper">
+    <div class="footer-shell">
+      <div class="footer-shell__topbar">
+        <a class="footer-shell__back-to-top" href="#">
+          <span class="footer-shell__back-to-top-text">nach oben</span>
+          <span class="footer-shell__back-to-top-icon" aria-hidden="true">↑</span>
+        </a>
+      </div>
 
-    {% dnd_section %}
-      {% dnd_column %}
-        {% dnd_row %}
-          {% dnd_module path="../../modules/social-follow" %}
-            {% module_attribute "social_link" is_json=True %}
-              [
-                {"social_account": "facebook-f"},
-                {"social_account": "linkedin-in"},
-                {"social_account": "twitter"},
-                {"social_account": "instagram"}
-              ]
-            {% end_module_attribute %}
-          {% end_dnd_module %}
-        {% end_dnd_row %}
-        {% dnd_row
-          margin={
-            "top": 12,
-            "bottom": 12
-          }
-        %}
-          {% dnd_module
-            path="@hubspot/rich_text",
-            html='<div style="text-align: center; font-size: 0.7rem;"><span>© {{ year }} All rights reserved.</span></div>'
-          %}
-          {% end_dnd_module %}
-        {% end_dnd_row %}
-      {% end_dnd_column %}
-    {% end_dnd_section %}
+      <div class="footer-shell__main">
+        <section class="footer-shell__brand" aria-label="Marke und Auszeichnungen">
+          <a class="footer-shell__logo-link" href="#" aria-label="Startseite">
+            {% if brand_settings.logo.src %}
+              <img
+                class="footer-shell__logo"
+                src="{{ brand_settings.logo.src|escape_url }}"
+                alt="{{ brand_settings.logo.alt|default(branding_company_name)|default('MATT')|escape_attr }}">
+            {% else %}
+              <span class="footer-shell__logo-text">MATT</span>
+            {% endif %}
+          </a>
 
-  {% end_dnd_area %}
+          <div class="footer-shell__awards">
+            <h2 class="footer-shell__eyebrow">Wir wurden ausgezeichnet</h2>
+            <div class="footer-shell__award-grid">
+              <div class="footer-shell__award-placeholder">Award 1</div>
+              <div class="footer-shell__award-placeholder">Award 2</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="footer-shell__navigation">
+          <nav class="footer-shell__group" aria-label="Unsere Services">
+            <h2 class="footer-shell__group-title">Unsere Services</h2>
+            <ul class="footer-shell__link-list footer-shell__link-list--two-column no-list">
+              {% for item in footer_service_links %}
+                <li class="footer-shell__link-item">
+                  <a class="footer-shell__link" href="{{ item.href|escape_url }}">{{ item.label|escape_html }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </nav>
+
+          <nav class="footer-shell__group" aria-label="Uber Matt">
+            <h2 class="footer-shell__group-title">Uber Matt</h2>
+            <ul class="footer-shell__link-list footer-shell__link-list--two-column no-list">
+              {% for item in footer_about_links %}
+                <li class="footer-shell__link-item">
+                  <a class="footer-shell__link" href="{{ item.href|escape_url }}">{{ item.label|escape_html }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </nav>
+
+          <nav class="footer-shell__group" aria-label="Karriere und Ausbildung">
+            <h2 class="footer-shell__group-title">Karriere &amp; Ausbildung</h2>
+            <ul class="footer-shell__link-list footer-shell__link-list--two-column no-list">
+              {% for item in footer_career_links %}
+                <li class="footer-shell__link-item">
+                  <a class="footer-shell__link" href="{{ item.href|escape_url }}">{{ item.label|escape_html }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </nav>
+        </div>
+
+        <aside class="footer-shell__aside" aria-label="Footer Aktionen und Social Links">
+          <div class="footer-shell__actions">
+            <a class="footer-shell__action btn btn--secondary" href="#">
+              {% icon
+                extra_classes="footer-shell__action-icon",
+                name="map-location-dot",
+                icon_set="fontawesome-6.4.2",
+                purpose="decorative",
+                style="SOLID"
+              %}
+              <span>Standort finden</span>
+            </a>
+            <a class="footer-shell__action btn btn--primary" href="#">
+              {% icon
+                extra_classes="footer-shell__action-icon",
+                name="calendar-days",
+                icon_set="fontawesome-6.4.2",
+                purpose="decorative",
+                style="SOLID"
+              %}
+              <span>Termin vereinbaren</span>
+            </a>
+          </div>
+
+          <ul class="footer-shell__social-list no-list" aria-label="Social Media">
+            {% for item in footer_social_links %}
+              <li class="footer-shell__social-item">
+                <a class="footer-shell__social-link" href="{{ item.href|escape_url }}" aria-label="{{ item.label|escape_attr }}">
+                  {% icon
+                    extra_classes="footer-shell__social-icon",
+                    name="{{ item.icon }}",
+                    icon_set="fontawesome-6.4.2",
+                    purpose="decorative",
+                    style="SOLID",
+                    unicode=""
+                  %}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </aside>
+      </div>
+
+      <div class="footer-shell__locations" aria-label="Standorte">
+        <span class="footer-shell__locations-label">Unsere Standorte:</span>
+        <ul class="footer-shell__locations-list no-list">
+          {% for item in footer_location_links %}
+            <li class="footer-shell__locations-item">
+              <a class="footer-shell__locations-link" href="{{ item.href|escape_url }}">{{ item.label|escape_html }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="footer-shell__legal">
+        <ul class="footer-shell__legal-list no-list">
+          {% for item in footer_legal_links %}
+            <li class="footer-shell__legal-item">
+              <a class="footer-shell__legal-link" href="{{ item.href|escape_url }}">{{ item.label|escape_html }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+        <p class="footer-shell__copyright">© {{ year|default("2025") }} Optik Matt GmbH &amp; Co. KG</p>
+      </div>
+    </div>
+  </div>
 </footer>

@@ -12,5 +12,5 @@
 	"categories": [
 		"functionality"
 	],
-	"inline_help_text": "Use this module for desktop mega navigation. Menu items, columns, and promo cards are managed inside the module fields."
+	"inline_help_text": "Use this module for desktop mega navigation. Select a reusable HubSpot menu in the module fields to populate the navigation."
 }

@@ -1,27 +1,4 @@
-{% macro render_link(label, link_field, class_name) %}
-	{% set href = link_field.url.href if link_field and link_field.url else "" %}
-	{% if link_field and link_field.url and link_field.url.type == "EMAIL_ADDRESS" %}
-		{% set href = "mailto:" + href %}
-	{% endif %}
-	{% set rel = [] %}
-	{% if link_field and link_field.no_follow %}
-		{% do rel.append("nofollow") %}
-	{% endif %}
-	{% if link_field and link_field.open_in_new_tab %}
-		{% do rel.append("noopener") %}
-	{% endif %}
-
-	{% if href %}
-		<a class="{{ class_name|escape_attr }}"
-			 href="{{ href|escape_url }}"
-			 {% if link_field.open_in_new_tab %}target="_blank"{% endif %}
-			 {% if rel %}rel="{{ rel|join(' ')|escape_attr }}"{% endif %}>
-			{{ label|escape_html }}
-		</a>
-	{% else %}
-		<span class="{{ class_name|escape_attr }}">{{ label|escape_html }}</span>
-	{% endif %}
-{% endmacro %}
+{{ require_css(get_asset_url("../../css/components/buttons.css")) }}
 
 {% macro render_menu_link(item, class_name) %}
 	{% if item.url %}
@@ -37,11 +14,55 @@
 {% endmacro %}
 
 {% set navigation_items = menu(module.menu, "site_root").children if module.menu else [] %}
+{% set brand_logo_href = "https://www.matt.de" %}
+{% set inherited_brand_logo_src = brand_settings.logo.src %}
+{% set override_brand_logo = module.brand_logo.override_inherited_src %}
+{% set override_brand_logo_src = module.brand_logo.src %}
+{% set hide_company_name = module.brand_logo.suppress_company_name %}
+{% set company_name = branding_company_name %}
+{% set has_override_brand_logo = override_brand_logo and override_brand_logo_src %}
+{% set missing_override_brand_logo = override_brand_logo and not override_brand_logo_src %}
+{% set show_brand_logo_placeholder = (missing_override_brand_logo and hide_company_name) or (missing_override_brand_logo and not hide_company_name and not company_name) %}
+{% set resolved_brand_logo_src = override_brand_logo_src if has_override_brand_logo else inherited_brand_logo_src %}
+{% set resolved_brand_logo_alt = module.brand_logo.alt if has_override_brand_logo and module.brand_logo.alt else company_name %}
+{% set resolved_brand_logo_width = module.brand_logo.width if has_override_brand_logo and module.brand_logo.width else brand_settings.logo.width %}
+{% set resolved_brand_logo_height = module.brand_logo.height if has_override_brand_logo and module.brand_logo.height else brand_settings.logo.height %}
+{% set brand_logo_loading = module.brand_logo.loading if module.brand_logo.loading != "disabled" else "" %}
+{% set header_cta_href = "#" %}
+{% set header_cta_label = "Jetzt Termin vereinbaren" %}
+
+{% macro render_brand_logo_placeholder() %}
+	{% if is_in_editor %}
+		{% editor_placeholder %}
+	{% endif %}
+{% endmacro %}
 
 {% if navigation_items|length %}
 	<nav class="mega-menu" aria-label="Primary navigation" data-mega-menu>
+	<div class="mega-menu__brand">
+		{% if resolved_brand_logo_src %}
+			<div class="mega-menu__brand-link">
+				<a href="{{ brand_logo_href|escape_url }}"{% if module.brand_logo_link.open_in_new_tab %} target="_blank" rel="noopener"{% endif %}>
+					<img
+						class="mega-menu__brand-logo"
+						src="{{ resolved_brand_logo_src|escape_url }}"
+						alt="{{ resolved_brand_logo_alt|default('Brand logo')|escape_attr }}"
+						{% if brand_logo_loading %}loading="{{ brand_logo_loading|escape_attr }}"{% endif %}
+						{% if resolved_brand_logo_width %}width="{{ resolved_brand_logo_width|escape_attr }}"{% endif %}
+						{% if resolved_brand_logo_height %}height="{{ resolved_brand_logo_height|escape_attr }}"{% endif %}>
+				</a>
+			</div>
+		{% elif show_brand_logo_placeholder %}
+			{{ render_brand_logo_placeholder() }}
+		{% elif not hide_company_name and company_name %}
+			<div class="mega-menu__brand-link">
+				<a href="{{ brand_logo_href|escape_url }}"{% if module.brand_logo_link.open_in_new_tab %} target="_blank" rel="noopener"{% endif %}>{{ company_name|escape_html }}</a>
+			</div>
+		{% else %}
+			{{ render_brand_logo_placeholder() }}
+		{% endif %}
+	</div>
 	<div class="mega-menu-1">
-		<p>MATT</p>
 		<ul class="mega-menu__list no-list">
 			{% for item in navigation_items %}
 			{% set has_panel = item.children|length %}
@@ -111,133 +132,24 @@
 		</ul>
 	</div>
 		<div class="mega-menu-2">
-		<p>icon 1</p>
-		<p>icon 2</p>
-		<p>icon 1</p>
-		<p>icon 2</p>
-		<p>CALL TO ACTION</p>
-		</div>
-	</nav>
-
-
-{# Fallback with module items #}
-
-{% elif module.items and module.items|length %}
-	<nav class="mega-menu" aria-label="Primary navigation" data-mega-menu>
-	<div class="mega-menu-1">	
-		<p>MATT</p>
-		<ul class="mega-menu__list no-list">
-			{% for item in module.items %}
-			{% set has_panel = item.show_panel and (item.columns|length or item.cards|length) %}
-			<li class="mega-menu__item{{ ' mega-menu__item--has-panel' if has_panel }}" data-mega-menu-item>
-				{% if has_panel %}
-					<button class="mega-menu__trigger"
-									type="button"
-									aria-expanded="false"
-									data-mega-menu-trigger>
-						{{ item.nav_text|escape_html }}
-					</button>
-					<div class="mega-menu__panel" hidden data-mega-menu-panel>
-						<div class="mega-menu__panel-inner">
-							<div class="mega-menu__grid">
-								<div class="mega-menu__columns">
-									{% for column in item.columns %}
-										{% if column.heading or column.links|length %}
-											<section class="mega-menu__column">
-												{% if column.heading %}
-													<h3 class="mega-menu__column-heading">{{ column.heading|escape_html }}</h3>
-												{% endif %}
-												{% if column.links|length %}
-													<ul class="mega-menu__links no-list">
-														{% for sublink in column.links %}
-															<li class="mega-menu__links-item">
-																{{ render_link(sublink.link_text, sublink.link, 'mega-menu__link') }}
-															</li>
-														{% endfor %}
-													</ul>
-												{% endif %}
-											</section>
-										{% endif %}
-									{% endfor %}
-								</div>
-
-								{% if item.cards|length %}
-									<aside class="mega-menu__cards" aria-label="Featured links">
-										{% for card in item.cards %}
-											{% set card_href = card.link.url.href if card.link and card.link.url else '' %}
-											{% if card.link and card.link.url and card.link.url.type == 'EMAIL_ADDRESS' %}
-												{% set card_href = 'mailto:' + card_href %}
-											{% endif %}
-											{% if card_href %}
-												<a class="mega-menu__card" href="{{ card_href|escape_url }}">
-											{% else %}
-												<div class="mega-menu__card">
-											{% endif %}
-													<div class="mega-menu__card-media">
-														{% if card.image.src %}
-															{% set size_attrs = 'width="%s" height="%s"'|format(card.image.width, card.image.height) %}
-															{% if card.image.size_type == 'auto' %}
-																{% set size_attrs = 'style="max-width: 100%; height: auto;"' %}
-															{% elif card.image.size_type == 'auto_custom_max' %}
-																{% set size_attrs = 'width="100%" height="auto" style="max-width: %spx; max-height: %spx;"'|format(card.image.max_width, card.image.max_height) %}
-															{% endif %}
-															<img class="mega-menu__card-image"
-																	 src="{{ card.image.src|escape_url }}"
-																	 alt="{{ card.image.alt|default(card.title)|escape_attr }}"
-																	 loading="{{ card.image.loading|default('lazy')|escape_attr }}"
-																	 {{ size_attrs }}>
-														{% else %}
-															<div class="mega-menu__card-placeholder"></div>
-														{% endif %}
-													</div>
-													<div class="mega-menu__card-body">
-														{% if card.eyebrow %}
-															<p class="mega-menu__card-eyebrow">{{ card.eyebrow|escape_html }}</p>
-														{% endif %}
-														{% if card.title %}
-															<h3 class="mega-menu__card-title">{{ card.title|escape_html }}</h3>
-														{% endif %}
-														{% if card.description %}
-															<p class="mega-menu__card-text">{{ card.description|escape_html }}</p>
-														{% endif %}
-													</div>
-											{% if card_href %}
-												</a>
-											{% else %}
-												</div>
-											{% endif %}
-										{% endfor %}
-									</aside>
-								{% endif %}
-							</div>
-
-							{% if item.link and item.link.url and item.link.url.href %}
-								<div class="mega-menu__footer">
-									{{ render_link(item.nav_text ~ ' overview', item.link, 'mega-menu__overview-link') }}
-								</div>
-							{% endif %}
-						</div>
-					</div>
-				{% else %}
-					{{ render_link(item.nav_text, item.link, 'mega-menu__top-link') }}
-				{% endif %}
-			</li>
-			{% endfor %}
-		</ul>
-	</div>
-		<div class="mega-menu-2">
-		<p>icon 1</p>
-		<p>icon 2</p>
-		<p>icon 1</p>
-		<p>icon 2</p>
-		<p>CALL TO ACTION</p>
+			<a class="mega-menu__cta btn btn--primary"
+				href="{{ header_cta_href|escape_url }}">
+				{% icon
+					extra_classes="mega-menu__cta-icon",
+					name="calendar-days",
+					icon_set="fontawesome-6.4.2",
+					purpose="decorative",
+					style="SOLID"
+				%}
+				<span class="mega-menu__cta-label">{{ header_cta_label|escape_html }}</span>
+			</a>
 		</div>
 	</nav>
 {% else %}
 	<div class="mega-menu mega-menu--empty">
 		<div class="mega-menu__empty-state">
 			<p class="mega-menu__empty-title">Mega Menu preview has no navigation yet.</p>
-			<p class="mega-menu__empty-text">Select a reusable HubSpot menu in the module editor or keep using the fallback item structure until the portal fields are synced.</p>
+			<p class="mega-menu__empty-text">Select a reusable HubSpot menu in the module editor to populate this mega menu.</p>
 		</div>
 	</div>
 {% endif %}
