@@ -3,7 +3,7 @@
   label: Footer
 -->
 {% set footer_service_links = [
-  { "label": "MATT Lens", "href": "#" },
+  { "label": "MATTlens", "href": "#" },
   { "label": "Brillenfinanzierung", "href": "#" },
   { "label": "Sorglospaket +", "href": "#" },
   { "label": "Sorglospaket Kids", "href": "#" },
@@ -48,6 +48,19 @@
   { "label": "YouTube", "href": "#", "icon": "youtube" },
   { "label": "Facebook", "href": "#", "icon": "facebook-f" }
 ] %}
+{% set brand_logo_href = "https://www.matt.de" %}
+{% set inherited_brand_logo_src = brand_settings.logo.src %}
+{% set company_name = branding_company_name %}
+{% set resolved_brand_logo_src = inherited_brand_logo_src %}
+{% set resolved_brand_logo_alt = brand_settings.logo.alt if brand_settings.logo.alt else company_name %}
+{% set resolved_brand_logo_width = brand_settings.logo.width %}
+{% set resolved_brand_logo_height = brand_settings.logo.height %}
+
+{% macro render_brand_logo_placeholder() %}
+  {% if is_in_editor %}
+    {% editor_placeholder %}
+  {% endif %}
+{% endmacro %}
 
 <footer class="footer footer--matt">
   <div class="content-wrapper">
@@ -61,19 +74,23 @@
 
       <div class="footer-shell__main">
         <section class="footer-shell__brand" aria-label="Marke und Auszeichnungen">
-          <a class="footer-shell__logo-link" href="#" aria-label="Startseite">
-            {% if brand_settings.logo.src %}
+          <a class="footer-shell__logo-link" href="{{ brand_logo_href|escape_url }}" aria-label="Startseite">
+            {% if resolved_brand_logo_src %}
               <img
                 class="footer-shell__logo"
-                src="{{ brand_settings.logo.src|escape_url }}"
-                alt="{{ brand_settings.logo.alt|default(branding_company_name)|default('MATT')|escape_attr }}">
+                src="{{ resolved_brand_logo_src|escape_url }}"
+                alt="{{ resolved_brand_logo_alt|default('MATT')|escape_attr }}"
+                {% if resolved_brand_logo_width %}width="{{ resolved_brand_logo_width|escape_attr }}"{% endif %}
+                {% if resolved_brand_logo_height %}height="{{ resolved_brand_logo_height|escape_attr }}"{% endif %}>
+            {% elif company_name %}
+              <span class="footer-shell__logo-text">{{ company_name|escape_html }}</span>
             {% else %}
-              <span class="footer-shell__logo-text">MATT</span>
+              {{ render_brand_logo_placeholder() }}
             {% endif %}
           </a>
 
           <div class="footer-shell__awards">
-            <h2 class="footer-shell__eyebrow">Wir wurden ausgezeichnet</h2>
+            <h2 class="footer-shell__eyebrow">Wir wurden ddd ausgezeichnet</h2>
             <div class="footer-shell__award-grid">
               <div class="footer-shell__award-placeholder">Award 1</div>
               <div class="footer-shell__award-placeholder">Award 2</div>
@@ -82,28 +99,32 @@
         </section>
 
         <div class="footer-shell__navigation">
-          <nav class="footer-shell__group" aria-label="Unsere Services">
-            <h2 class="footer-shell__group-title">Unsere Services</h2>
-            <ul class="footer-shell__link-list footer-shell__link-list--two-column no-list">
-              {% for item in footer_service_links %}
-                <li class="footer-shell__link-item">
-                  <a class="footer-shell__link" href="{{ item.href|escape_url }}">{{ item.label|escape_html }}</a>
-                </li>
-              {% endfor %}
-            </ul>
-          </nav>
 
-          <nav class="footer-shell__group" aria-label="Uber Matt">
-            <h2 class="footer-shell__group-title">Uber Matt</h2>
-            <ul class="footer-shell__link-list footer-shell__link-list--two-column no-list">
-              {% for item in footer_about_links %}
-                <li class="footer-shell__link-item">
-                  <a class="footer-shell__link" href="{{ item.href|escape_url }}">{{ item.label|escape_html }}</a>
-                </li>
-              {% endfor %}
-            </ul>
-          </nav>
+          <div class="footer-shell__part-one">
+            <nav class="footer-shell__group" aria-label="Unsere Services">
+              <h2 class="footer-shell__group-title">Unsere Services</h2>
+              <ul class="footer-shell__link-list footer-shell__link-list--two-column no-list">
+                {% for item in footer_service_links %}
+                  <li class="footer-shell__link-item">
+                    <a class="footer-shell__link" href="{{ item.href|escape_url }}">{{ item.label|escape_html }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </nav>
 
+            <nav class="footer-shell__group" aria-label="Über Matt">
+              <h2 class="footer-shell__group-title">Über Matt</h2>
+              <ul class="footer-shell__link-list footer-shell__link-list--two-column no-list">
+                {% for item in footer_about_links %}
+                  <li class="footer-shell__link-item">
+                    <a class="footer-shell__link" href="{{ item.href|escape_url }}">{{ item.label|escape_html }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </nav>
+         </div> 
+
+         <div class="footer-shell__part-two">
           <nav class="footer-shell__group" aria-label="Karriere und Ausbildung">
             <h2 class="footer-shell__group-title">Karriere &amp; Ausbildung</h2>
             <ul class="footer-shell__link-list footer-shell__link-list--two-column no-list">
@@ -114,9 +135,7 @@
               {% endfor %}
             </ul>
           </nav>
-        </div>
 
-        <aside class="footer-shell__aside" aria-label="Footer Aktionen und Social Links">
           <div class="footer-shell__actions">
             <a class="footer-shell__action btn btn--secondary" href="#">
               {% icon
@@ -140,7 +159,10 @@
             </a>
           </div>
 
-          <ul class="footer-shell__social-list no-list" aria-label="Social Media">
+         
+        </div>
+        <div class="footer-shell__part-three">
+             <ul class="footer-shell__social-list no-list" aria-label="Social Media">
             {% for item in footer_social_links %}
               <li class="footer-shell__social-item">
                 <a class="footer-shell__social-link" href="{{ item.href|escape_url }}" aria-label="{{ item.label|escape_attr }}">
@@ -156,10 +178,17 @@
               </li>
             {% endfor %}
           </ul>
-        </aside>
+
+        </div>
+        </div>
       </div>
 
-      <div class="footer-shell__locations" aria-label="Standorte">
+ 
+    </div>
+      
+  </div>
+  <div class="footer-shell__bottom">
+<div class="footer-shell__locations" aria-label="Standorte">
         <span class="footer-shell__locations-label">Unsere Standorte:</span>
         <ul class="footer-shell__locations-list no-list">
           {% for item in footer_location_links %}
@@ -180,6 +209,6 @@
         </ul>
         <p class="footer-shell__copyright">© {{ year|default("2025") }} Optik Matt GmbH &amp; Co. KG</p>
       </div>
-    </div>
   </div>
+
 </footer>

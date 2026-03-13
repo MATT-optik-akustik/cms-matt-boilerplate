@@ -18,11 +18,11 @@
 
 .btn--primary {
   background: #5a1717;
-  color: #dee1e9;
+  color: #fbf9f7;
 }
 
 .btn--secondary {
-  background: #0693d4;
+  background: #e4ddd8;
   color: #2b2b2b;
 }
 
@@ -36,9 +36,16 @@
 .btn--primary:hover,
 .btn--primary:focus {
   opacity: 0.9;
+  color: #fbf9f7;
+  font-weight: 500;
+  text-decoration: none;
+
 }
 
 .btn--secondary:hover,
 .btn--secondary:focus {
   opacity: 0.9;
+  color: #2b2b2b;
+  font-weight: 500;
+  text-decoration: none;
 }
